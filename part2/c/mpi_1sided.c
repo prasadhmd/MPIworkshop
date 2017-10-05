@@ -33,11 +33,14 @@ MPI %d.%d\n", rank, size, processor_name, version, subversion);
     printf(" %d", a[i]);
   printf("\n");
 
+  //MPI_MODE_NOPUT: No put or accumulate after the fence call
+  //MPI_MODE_NOPRECEDE: fence does not complete any RMA calls
   MPI_Win_fence((MPI_MODE_NOPUT | MPI_MODE_NOPRECEDE), win);
 
   for (i = 0; i < size; i++)
     MPI_Get(&b[i], 1, MPI_INT, i, rank, 1, MPI_INT, win);
 
+  //MPI_MODE_NOSUCCEED: fence does not start any RMA calls
   MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
   printf("Process %d obtained the following:", rank);
 
